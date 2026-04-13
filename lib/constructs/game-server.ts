@@ -32,16 +32,15 @@ export class GameServer extends Construct {
       { os: ec2.OperatingSystemType.LINUX }
     );
 
-    const userData = ec2.UserData.forLinux();
     const setupScript = fs.readFileSync(
       path.join(__dirname, '../user-data/setup.sh'),
       'utf-8'
     );
-    userData.addCommands(setupScript);
+    const userData = ec2.UserData.custom(setupScript);
 
     this.instance = new ec2.Instance(this, 'Instance', {
       vpc,
-      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
+      instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
       machineImage: ami,
       securityGroup: sg,
       role,
